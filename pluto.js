@@ -92,6 +92,37 @@ class Pluto {
 	}
 
 	/**
+	 * Clean errors from HTML DOM 
+	 * 
+	 * @param string inputId OPTIONAL - The id of the input to be cleaned
+	 * 
+	 * @return void
+	 */
+	cleanFormErrors(inputId) {
+		const inputsIds = Object.keys(this._errors);
+
+		const cleanInput = (_inputId) => {
+			let _input = document.getElementById(_inputId); 
+			let errorDisplay = document.querySelector(`[pluto-input="#${_inputId}"]`);
+
+			if(_input) 
+				_input.classList.remove(...this._errorClasses);
+
+			if( errorDisplay ) 
+				errorDisplay.innerText = '';
+		}
+
+		if(inputId !== undefined) 
+			cleanInput(inputId);
+		else 
+			for(let _inputId of inputsIds) {
+				cleanInput(_inputId);
+			}
+
+		this._errors = {};
+	}
+
+	/**
 	 * Method to validate form
 	 * 
 	 * @param Element form
@@ -99,7 +130,7 @@ class Pluto {
 	 * @return bool If the form is valid or not
 	 */
 	validateForm(form) {
-		this._errors = {};
+		this.cleanFormErrors();
 
 		const inputs = Array.from( form.getElementsByTagName("input") );
 		let isValid = true;
@@ -127,9 +158,11 @@ class Pluto {
 
 		if( isRequired ) {
 			// validate field has data
-            isValid = input.value === '';
-            let errorMessage = this._getErrorMessage(input, 'required');
-            this._attatchErrorMessage(input.id, errorMessage);
+			isValid = input.value !== '';
+			if( !isValid ) {
+				let errorMessage = this._getErrorMessage(input, 'required');
+				this._attatchErrorMessage(fieldId, errorMessage);
+			}
 		}
 
 		const dataType = input.getAttribute('pluto-data-type');
@@ -139,8 +172,11 @@ class Pluto {
 				case 'int':
 					isValid = isValid && this.validateInt(input);
                     break;
-                case 'int':
+                case 'email':
                     isValid = isValid && this.validateEmail(input);
+                    break;
+                case 'phone':
+                    isValid = isValid && this.validatePhone(input);
                     break;
 			}
 		}
@@ -159,7 +195,7 @@ class Pluto {
 		if( !Number.isInteger(value) ){
             isValid = false;
             let errorMessage = this._getErrorMessage(input, 'int');
-            this._attatchErrorMessage(input.id, errorMessage);
+            this._attatchErrorMessage(fieldId, errorMessage);
 		}
 
 		value = parseInt(value);
@@ -170,7 +206,7 @@ class Pluto {
         if( min !== null && !this.validateMin( value, min ) ) {
             isValid = false;
             let errorMessage = this._getErrorMessage(input, 'min');
-            this._attatchErrorMessage(input.id, errorMessage);
+            this._attatchErrorMessage(fieldId, errorMessage);
         }
         
         const max = input.getAttribute('pluto-max-value');
@@ -179,7 +215,7 @@ class Pluto {
         if( max !== null && !this.validateMax(value, max) ) {
             isValid = false;
             let errorMessage = this._getErrorMessage(input, 'max');
-            this._attatchErrorMessage(input.id, errorMessage);
+            this._attatchErrorMessage(fieldId, errorMessage);
 		}
 
 		return isValid;
@@ -201,9 +237,37 @@ class Pluto {
 	 * Validate Email
 	 */
 	validateEmail(input) {
-		// TODO: add the error to the _errors obj
+        const fieldId = this._getInputId(input);
+		const value = input.value;
+
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
-        return re.test(input.value);
+ 
+        if( !re.test(value) ){
+            let errorMessage = this._getErrorMessage(input, 'email');
+			this._attatchErrorMessage(fieldId, errorMessage);
+			return false;
+        }
+        
+        return true;
+    }
+
+    /**
+	 * Validate Phone
+	 */
+	validatePhone(input) {
+        const fieldId = this._getInputId(input);
+		const value = input.value;
+
+        const re = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
+ 
+        if( !re.test(value) ){
+            let errorMessage = this._getErrorMessage(input, 'phone');
+            this._attatchErrorMessage(fieldId, errorMessage);
+            return false
+        }
+        
+        return true;
+
     }
 
     /**
