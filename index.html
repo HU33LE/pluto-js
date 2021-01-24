@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+	</head>
+	<body>
+
+		<form action="" method="get" id="my-form" 
+			pluto-validate
+		>
+			<div class="input-group">
+				<label for="text-input">Required Input:</label>
+				<input type="text" name="required-input" id="required-input" 
+					pluto-required="true"
+				>
+				<div class="feed-back" pluto-input="#required-input"></div>
+				<hr>
+            </div>
+            
+            <div class="input-group">
+				<label for="text-input">Only Letters Input:</label>
+                <input type="text" name="letters-input" id="letters-input"
+                    pluto-required="true"
+                    pluto-data-type="alpha"
+				>
+				<div class="feed-back" pluto-input="#letters-input"></div>
+				<hr>
+            </div>
+
+            <div class="input-group">
+				<label for="text-input">Only Integer Numbers Input:</label>
+                <input type="text" name="int-input" id="int-input"
+                    pluto-data-type="int"
+				>
+				<div class="feed-back" pluto-input="#int-input"></div>
+				<hr>
+            </div>
+
+            <div class="input-group">
+				<label for="text-input">Only Double Numbers Input:</label>
+                <input type="text" name="double-input" id="double-input"
+                    pluto-data-type="double"
+				>
+				<div class="feed-back" pluto-input="#double-input"></div>
+				<hr>
+            </div>
+            
+            <div class="input-group">
+				<label for="text-input">Only Letters and numbers Input:</label>
+                <input type="text" name="letters-numbers-input" id="letters-numbers-input"
+                    pluto-data-type="alphanumeric"
+				>
+				<div class="feed-back" pluto-input="#letters-numbers-input"></div>
+				<hr>
+            </div>
+            
+            <div class="input-group">
+				<label for="text-input">Phone Input:</label>
+                <input type="text" name="phone-input" id="phone-input"
+                    pluto-data-type="phone"
+				>
+				<div class="feed-back" pluto-input="#phone-input"></div>
+				<hr>
+            </div>
+            
+            <div class="input-group">
+				<label for="text-input">Email Input:</label>
+                <input type="text" name="email-input" id="email-input"
+                    pluto-data-type="email"
+				>
+				<div class="feed-back" pluto-input="#email-input"></div>
+				<hr>
+            </div>
+            
+            <div class="input-group">
+				<label for="text-input">Min Max Input:</label>
+                <input type="text" name="min-max-input" id="min-max-input"
+                    pluto-data-type="int"
+                    pluto-min-value="0"
+                    pluto-max-value="100"
+				>
+				<div class="feed-back" pluto-input="#min-max-input"></div>
+				<hr>
+			</div>
+			
+			<button type="submit">Submit</button>
+
+		</form>
+
+		<script src="pluto.js"></script>
+		<script>
+			const PlutoJS = new Pluto();
+		</script>
+	</body>
+</html>
+
